@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace hanneskod\GiroappMailerPlugin;
 
-(@include __DIR__ . '/../vendor/autoload.php') || @require __DIR__ . '/../giroapp-mailer-plugin/vendor/autoload.php';
+(@include __DIR__ . '/../vendor/autoload.php') || require __DIR__ . '/../giroapp-mailer-plugin/vendor/autoload.php';
 
 ################################################################################
 
@@ -27,42 +27,44 @@ DependencyLocator::setup([
 
 ################################################################################
 
-use byrokrat\giroapp\Events;
-use byrokrat\giroapp\Event\DonorEvent;
-use byrokrat\giroapp\Event\LogEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface as Dispatcher;
-
-class GiroappMailerPlugin implements EventSubscriberInterface
-{
-    public static function getSubscribedEvents()
+if (interface_exists('Symfony\Component\EventDispatcher\EventSubscriberInterface')) {
+    class GiroappMailerPlugin implements \Symfony\Component\EventDispatcher\EventSubscriberInterface
     {
-        return [
-            Events::DONOR_ADDED => 'onMailableEvent',
-            Events::DONOR_REMOVED => 'onMailableEvent',
-            Events::MANDATE_APPROVED => 'onMailableEvent',
-            Events::MANDATE_REVOKED => 'onMailableEvent',
-            Events::MANDATE_INVALIDATED => 'onMailableEvent',
-        ];
-    }
+        public static function getSubscribedEvents()
+        {
+            return [
+                \byrokrat\giroapp\Events::DONOR_ADDED => 'onMailableEvent',
+                \byrokrat\giroapp\Events::DONOR_REMOVED => 'onMailableEvent',
+                \byrokrat\giroapp\Events::MANDATE_APPROVED => 'onMailableEvent',
+                \byrokrat\giroapp\Events::MANDATE_REVOKED => 'onMailableEvent',
+                \byrokrat\giroapp\Events::MANDATE_INVALIDATED => 'onMailableEvent',
+            ];
+        }
 
-    public function onMailableEvent(DonorEvent $event, string $name, Dispatcher $dispatcher)
-    {
-        $templateReader = DependencyLocator::getTemplateReader();
-        $messageFactory = DependencyLocator::getMessageFactory();
-        $queue = DependencyLocator::getMessageQueue();
+        public function onMailableEvent(
+            \byrokrat\giroapp\Event\DonorEvent $event,
+            string $name,
+            \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+        ) {
+            $templateReader = DependencyLocator::getTemplateReader();
+            $messageFactory = DependencyLocator::getMessageFactory();
+            $queue = DependencyLocator::getMessageQueue();
 
-        foreach ($templateReader->getTemplatesForEvent($name) as $tmpl) {
-            $message = $messageFactory->createMessage($tmpl, $event->getDonor());
-            $queue->store($message);
+            foreach ($templateReader->getTemplatesForEvent($name) as $tmpl) {
+                $message = $messageFactory->createMessage($tmpl, $event->getDonor());
+                $queue->store($message);
 
-            $logMsg = sprintf(
-                "Queued message '%s' to '%s'",
-                iconv_mime_decode((string)$message->getHeader('subject')[0]->getValue()),
-                $event->getDonor()->getName()
-            );
+                $logMsg = sprintf(
+                    "Queued message '%s' to '%s'",
+                    iconv_mime_decode((string)$message->getHeader('subject')[0]->getValue()),
+                    $event->getDonor()->getName()
+                );
 
-            $dispatcher->dispatch(Events::INFO, new LogEvent($logMsg));
+                $dispatcher->dispatch(
+                    \byrokrat\giroapp\Events::INFO,
+                    new \byrokrat\giroapp\Event\LogEvent($logMsg)
+                );
+            }
         }
     }
 }
