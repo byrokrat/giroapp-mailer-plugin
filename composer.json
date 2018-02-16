@@ -1,0 +1,20 @@
+{
+    "autoload": {
+        "psr-4": {
+            "hanneskod\\GiroappMailerPlugin\\": ["src/"]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.1",
+        "hkod/frontmatter": "^1",
+        "mustache/mustache": "^2.5",
+        "symfony/yaml": "^4",
+        "genkgo/mail": "^2.2",
+        "symfony/finder": "^4"
+    },
+    "require-dev": {
+        "byrokrat/giroapp": "^1@alpha"
+    }
+}
