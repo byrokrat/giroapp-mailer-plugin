@@ -5,7 +5,7 @@ declare(strict_types = 1);
 
 namespace hanneskod\GiroappMailerPlugin;
 
-(@include __DIR__ . '/../plugins/GiroappMailerPlugin.php') || require __DIR__ . '/src/GiroappMailerPlugin.php';
+(@include __DIR__ . '/../plugins/GiroappMailerPlugin.php') || @include __DIR__ . '/src/GiroappMailerPlugin.php';
 
 use Genkgo\Mail\Exception\AbstractProtocolException;
 use Genkgo\Mail\Exception\EmptyQueueException;

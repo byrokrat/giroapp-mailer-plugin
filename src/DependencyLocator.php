@@ -42,8 +42,6 @@ class DependencyLocator
 
     public static function getMessageTransport(): \Genkgo\Mail\TransportInterface
     {
-        return new \Genkgo\Mail\Transport\NullTransport;
-
         return new \Genkgo\Mail\Transport\SmtpTransport(
             \Genkgo\Mail\Protocol\Smtp\ClientFactory::fromString(self::$settings['smtp_string'])->newClient(),
             \Genkgo\Mail\Transport\EnvelopeFactory::useExtractedHeader()
