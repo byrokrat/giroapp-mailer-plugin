@@ -14,6 +14,12 @@ class DependencyLocator
     public static function setup(array $settings): void
     {
         self::$settings = $settings;
+
+        foreach (['template_dir', 'queue_dir'] as $dirname) {
+            if (!is_dir($settings[$dirname])) {
+                mkdir($settings[$dirname]);
+            }
+        }
     }
 
     public static function getFrontmatterParser(): \hkod\frontmatter\Parser
