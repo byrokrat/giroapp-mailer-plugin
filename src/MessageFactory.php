@@ -11,6 +11,8 @@ use Genkgo\Mail\FormattedMessageFactory;
 use Genkgo\Mail\Header\Subject;
 use Genkgo\Mail\Header\From;
 use Genkgo\Mail\Header\To;
+use Genkgo\Mail\Header\Cc;
+use Genkgo\Mail\Header\Bcc;
 
 /**
  * Create mail messages
@@ -38,11 +40,24 @@ class MessageFactory
         $result = $this->parser->parse($tmpl, $donor);
         $meta = $result->getFrontmatter();
 
-        return $this->messageFactory
+        $message = $this->messageFactory
             ->withHtml($result->getBody())
             ->createMessage()
             ->withHeader(new Subject($meta['subject'] ?? ''))
-            ->withHeader(From::fromEmailAddress($meta['from'] ?? ''))
-            ->withHeader(To::fromSingleRecipient($meta['to'] ?? $donor->getEmail()));
+            ->withHeader(From::fromEmailAddress($meta['from'] ?? ''));
+
+        foreach ((array)($meta['to'] ?? $donor->getEmail()) as $to) {
+            $message = $message->withHeader(To::fromSingleRecipient($to));
+        }
+
+        foreach ((array)($meta['cc'] ?? []) as $cc) {
+            $message = $message->withHeader(Cc::fromSingleRecipient($cc));
+        }
+
+        foreach ((array)($meta['bcc'] ?? []) as $bcc) {
+            $message = $message->withHeader(Bcc::fromSingleRecipient($bcc));
+        }
+
+        return $message;
     }
 }

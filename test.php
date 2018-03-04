@@ -33,7 +33,7 @@ $donor = new Donor(
     []
 );
 
-(new GiroappMailerPlugin)->onMailableEvent(
+(new MailingSubscriber)->onMailableEvent(
     new DonorEvent('testevent', $donor),
     Events::DONOR_ADDED,
     new \Symfony\Component\EventDispatcher\EventDispatcher

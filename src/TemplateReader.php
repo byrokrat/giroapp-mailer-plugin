@@ -18,10 +18,10 @@ class TemplateReader
         $this->finder = $finder;
     }
 
-    public function getTemplatesForEvent(string $eventName): iterable
+    public function getTemplatesByPostfix(string $postfix): iterable
     {
         foreach ($this->finder as $file) {
-            if (preg_match("/\.$eventName/", $file->getFilename())) {
+            if (preg_match("/\.$postfix$/", $file->getFilename())) {
                 yield $file->getContents();
             }
         }
