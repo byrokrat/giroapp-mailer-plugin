@@ -32,7 +32,7 @@ class Worker
             $logMsg = sprintf(
                 "Queued message '%s' to '%s'",
                 iconv_mime_decode((string)$message->getHeader('subject')[0]->getValue()),
-                $donor->getName()
+                iconv_mime_decode((string)$message->getHeader('to')[0]->getValue())
             );
 
             $dispatcher->dispatch(Events::INFO, new LogEvent($logMsg));
