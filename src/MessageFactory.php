@@ -13,6 +13,7 @@ use Genkgo\Mail\Header\From;
 use Genkgo\Mail\Header\To;
 use Genkgo\Mail\Header\Cc;
 use Genkgo\Mail\Header\Bcc;
+use Genkgo\Mail\Header\ReplyTo;
 
 /**
  * Create mail messages
@@ -38,13 +39,17 @@ class MessageFactory
     public function createMessage(string $tmpl, Donor $donor): MessageInterface
     {
         $result = $this->parser->parse($tmpl, $donor);
-        $meta = $result->getFrontmatter();
+        $meta = array_change_key_case($result->getFrontmatter(), CASE_LOWER);
 
         $message = $this->messageFactory
             ->withHtml($result->getBody())
             ->createMessage()
             ->withHeader(new Subject($meta['subject'] ?? ''))
             ->withHeader(From::fromEmailAddress($meta['from'] ?? ''));
+
+        if (isset($meta['replyto'])) {
+            $message = $message->withHeader(ReplyTo::fromSingleRecipient($meta['replyto']));
+        }
 
         foreach ((array)($meta['to'] ?? $donor->getEmail()) as $to) {
             $message = $message->withHeader(To::fromSingleRecipient($to));

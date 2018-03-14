@@ -14,13 +14,14 @@ Plugin for sending mails on giroapp events. Possible merge with giroapp master.
 ## Creating templats
 
 Templates are html formatted mustache templates with a YAML frontmatter.
-Supported frontmatter variables are (case sensitive):
+Supported frontmatter variables are (case insensitive):
 
-* `subject`
-* `from`
-* `to` (single address or array, defaults to donor mail address if omitted)
-* `cc` (single address or array)
-* `bcc` (single address or array)
+* `Subject`
+* `From`
+* `ReplyTo`
+* `To` (single address or array, defaults to donor mail address if omitted)
+* `Cc` (single address or array)
+* `Bcc` (single address or array)
 
 A template may look something like this:
 
@@ -28,6 +29,7 @@ A template may look something like this:
 ---
 to: {{getEmail}}
 from: some@mail.com
+ReplyTo: some@other.mail.com
 bcc: keep-a-copy@here.com
 subject: Welcome as a donor
 ---
