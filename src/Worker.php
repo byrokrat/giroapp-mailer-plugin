@@ -27,6 +27,11 @@ class Worker
     {
         foreach ($this->templateReader->getTemplatesByPostfix($tmplPostfix) as $tmpl) {
             $message = $this->messageFactory->createMessage($tmpl, $donor);
+
+            if (!$message) {
+                continue;
+            }
+
             $this->queue->store($message);
 
             $logMsg = sprintf(

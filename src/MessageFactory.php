@@ -36,10 +36,14 @@ class MessageFactory
         $this->messageFactory = $factory;
     }
 
-    public function createMessage(string $tmpl, Donor $donor): MessageInterface
+    public function createMessage(string $tmpl, Donor $donor): ?MessageInterface
     {
         $result = $this->parser->parse($tmpl, $donor);
         $meta = array_change_key_case($result->getFrontmatter(), CASE_LOWER);
+
+        if (empty(trim($result->getBody()))) {
+            return null;
+        }
 
         $message = $this->messageFactory
             ->withHtml($result->getBody())
