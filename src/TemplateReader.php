@@ -18,7 +18,7 @@ class TemplateReader
         $this->finder = $finder;
     }
 
-    public function getTemplatesByPostfix(string $postfix): iterable
+    public function readTemplates(string $postfix): iterable
     {
         foreach ($this->finder as $file) {
             if (preg_match("/\.$postfix$/", $file->getFilename())) {

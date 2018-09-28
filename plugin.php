@@ -19,8 +19,10 @@ return new class implements PluginInterface {
         $container['template_dir'] = $env->readConfig('mailer_template_dir');
         $container['queue_dir'] = $env->readConfig('mailer_queue_dir');
 
-        $env->registerCommand($container[MailerSendCommand::CLASS]);
-        $env->registerCommand($container[MailerStatusCommand::CLASS]);
+        // TODO commands..
+        // $env->registerCommand($container[MailerSendCommand::CLASS]);
+        // $env->registerCommand($container[MailerStatusCommand::CLASS]);
+
         $env->registerSubscriber($container[MailingSubscriber::CLASS]);
     }
 };

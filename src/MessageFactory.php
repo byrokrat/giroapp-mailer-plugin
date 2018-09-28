@@ -15,30 +15,27 @@ use Genkgo\Mail\Header\Cc;
 use Genkgo\Mail\Header\Bcc;
 use Genkgo\Mail\Header\ReplyTo;
 
-/**
- * Create mail messages
- */
 class MessageFactory
 {
     /**
      * @var Parser
      */
-    private $parser;
+    private $frontmatterParser;
 
     /**
      * @var FormattedMessageFactory
      */
     private $messageFactory;
 
-    public function __construct(Parser $parser, FormattedMessageFactory $factory)
+    public function __construct(Parser $frontmatterParser, FormattedMessageFactory $factory)
     {
-        $this->parser = $parser;
+        $this->frontmatterParser = $frontmatterParser;
         $this->messageFactory = $factory;
     }
 
     public function createMessage(string $tmpl, Donor $donor): ?MessageInterface
     {
-        $result = $this->parser->parse($tmpl, $donor);
+        $result = $this->frontmatterParser->parse($tmpl, $donor);
         $meta = array_change_key_case($result->getFrontmatter(), CASE_LOWER);
 
         if (empty(trim($result->getBody()))) {
