@@ -1,0 +1,9 @@
+# TODO
+
+* Uppdatera till alpha3-plugin interface
+* `plugin.php` som returnerar vår plugin instans..
+* Någon form av mer riktigt DIC..
+* Rudimentära test..
+* Configs från `giroapp.ini` => problem att lösa med paths...
+* Riktigt command istället för `send_mail.php`
+* Bygg phar..
