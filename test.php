@@ -5,7 +5,7 @@
 
 declare(strict_types = 1);
 
-namespace hanneskod\GiroappMailerPlugin;
+namespace byrokrat\giroappmailer;
 
 require __DIR__ . '/src/GiroappMailerPlugin.php';
 

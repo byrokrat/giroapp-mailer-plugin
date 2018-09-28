@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace hanneskod\GiroappMailerPlugin;
+namespace byrokrat\giroappmailer;
 
 use byrokrat\giroapp\Model\Donor;
 use hkod\frontmatter\Parser;

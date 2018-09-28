@@ -9,7 +9,7 @@
 
 declare(strict_types = 1);
 
-namespace hanneskod\GiroappMailerPlugin;
+namespace byrokrat\giroappmailer;
 
 (@include __DIR__ . '/../vendor/autoload.php') || @include __DIR__ . '/../giroapp-mailer-plugin/vendor/autoload.php';
 
@@ -38,7 +38,7 @@ if (!interface_exists('Symfony\Component\EventDispatcher\EventSubscriberInterfac
     interface EventSubscriberInterface {}
 }
 
-namespace hanneskod\GiroappMailerPlugin;
+namespace byrokrat\giroappmailer;
 
 use byrokrat\giroapp\Events;
 use byrokrat\giroapp\Event\DonorEvent;

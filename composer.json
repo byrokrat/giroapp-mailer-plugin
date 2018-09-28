@@ -1,7 +1,19 @@
 {
+    "name": "byrokrat/giroappmailer",
+    "description": "Mailer plugin for GiroApp",
+    "keywords": ["giroapp"],
+    "homepage": "https://github.com/byrokrat/giroapp-mailer-plugin",
+    "type": "project",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Hannes Forsgård",
+            "email": "hannes.forsgard@fripost.org"
+        }
+    ],
     "autoload": {
         "psr-4": {
-            "hanneskod\\GiroappMailerPlugin\\": ["src/"]
+            "byrokrat\\giroappmailer\\": ["src/"]
         }
     },
     "minimum-stability": "dev",
