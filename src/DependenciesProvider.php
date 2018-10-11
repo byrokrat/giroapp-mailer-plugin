@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace byrokrat\giroappmailer;
+namespace byrokrat\giroappmailerplugin;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -24,11 +24,14 @@ final class DependenciesProvider implements ServiceProviderInterface
     public function register(Container $container)
     {
         $container[MailerSendCommand::CLASS] = function ($c) {
-            // TODO
+            return new MailerSendCommand(
+                $c[QueueInterface::CLASS],
+                $c[TransportInterface::CLASS]
+            );
         };
 
         $container[MailerStatusCommand::CLASS] = function ($c) {
-            // TODO
+            return new MailerStatusCommand($c[QueueInterface::CLASS]);
         };
 
         $container[MailingSubscriber::CLASS] = function ($c) {

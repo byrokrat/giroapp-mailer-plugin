@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace byrokrat\giroappmailer;
+namespace byrokrat\giroappmailerplugin;
 
 use byrokrat\giroapp\Events;
 use byrokrat\giroapp\Event\DonorEvent;

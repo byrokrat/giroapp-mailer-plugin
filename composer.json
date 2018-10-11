@@ -1,5 +1,5 @@
 {
-    "name": "byrokrat/giroappmailer",
+    "name": "byrokrat/giroappmailerplugin",
     "description": "Mailer plugin for GiroApp",
     "keywords": ["giroapp"],
     "homepage": "https://github.com/byrokrat/giroapp-mailer-plugin",
@@ -13,7 +13,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "byrokrat\\giroappmailer\\": ["src/"]
+            "byrokrat\\giroappmailerplugin\\": ["src/"]
         }
     },
     "minimum-stability": "dev",

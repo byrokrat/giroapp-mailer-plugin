@@ -1,17 +1,28 @@
 # giroapp-mailer-plugin
 
-Plugin for sending mails on giroapp events. Possible merge with giroapp master.
+Plugin for sending mails on giroapp events.
 
 ## Installation
 
-1. Clone repo in your giroapp user directory.
-1. From install dir run `composer install --no-dev`.
-1. Copy `GiroappMailerPlugin.php` to giroapp `plugins` directory.
-1. Edit your settings in `GiroappMailerPlugin.php`. Specifically the `SMTP` setting
-   needs a value.
-1. Create the `templates` and `queue` directories in your giroapp user dir.
+1. Download the latest phar archive from the github
+   [releases](https://github.com/byrokrat/giroapp-mailer-plugin/releases) page.
+1. Place the phar in the `plugins` directory of you giroapp user directory.
+1. Copy the following snippet to `giroapp.ini` and edit to your needs.
 
-## Usage
+```ini
+; Mailer smtp authentication string
+mailer_smtp_string = "smtp://user:pass@host/"
+
+; Directory where mail templates are stored
+; Should be an absolute path
+mailer_template_dir = "templates"
+
+; Directory where queued mails are stored
+; Should be an absolute path
+mailer_queue_dir = "queue"
+```
+
+## Templates
 
 Templates are html formatted mustache templates with a YAML frontmatter.
 Supported frontmatter variables are (case insensitive):
@@ -47,7 +58,7 @@ from: some@mail.com
 subject: Only sent if there is a commment in donor
 ---
 {{# getComment}}
-    There is a comment, so thing mail will be generated..
+    There is a comment, so this mail will be generated..
 {{/ getComment}}
 ```
 
@@ -62,10 +73,18 @@ that should trigger message creation. Possible values are:
 * `MANDATE_REVOKED`
 * `MANDATE_INVALIDATED`
 
-## Sending queued mails
+## The mail queue
 
-Invoke the send script using something like
+Plugin registers two giroapp commands.
+
+To inspect the current mail queue use
 
 ```shell
-~/.giroapp/giroapp-mailer-plugin/send_mail.php
+giroapp mailer:status
+```
+
+To send mails in queue use
+
+```shell
+giroapp mailer:send
 ```

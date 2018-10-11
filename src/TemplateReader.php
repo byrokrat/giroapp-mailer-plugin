@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace byrokrat\giroappmailer;
+namespace byrokrat\giroappmailerplugin;
 
 use Symfony\Component\Finder\Finder;
 

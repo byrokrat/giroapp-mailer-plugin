@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace byrokrat\giroappmailer;
+namespace byrokrat\giroappmailerplugin;
 
 use byrokrat\giroapp\Plugin\PluginInterface;
 use byrokrat\giroapp\Plugin\EnvironmentInterface;
@@ -19,10 +19,11 @@ return new class implements PluginInterface {
         $container['template_dir'] = $env->readConfig('mailer_template_dir');
         $container['queue_dir'] = $env->readConfig('mailer_queue_dir');
 
-        // TODO commands..
-        // $env->registerCommand($container[MailerSendCommand::CLASS]);
-        // $env->registerCommand($container[MailerStatusCommand::CLASS]);
+        $env->registerCommand($container[MailerSendCommand::CLASS]);
+        $env->registerCommand($container[MailerStatusCommand::CLASS]);
 
         $env->registerSubscriber($container[MailingSubscriber::CLASS]);
     }
 };
+
+__HALT_COMPILER();
