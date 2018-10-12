@@ -4,13 +4,10 @@
         "src",
         "vendor"
     ],
-    "files": [
-        "plugin.php"
-    ],
     "compactors": [
         "KevinGH\\Box\\Compactor\\Php"
     ],
-    "stub": "plugin.php",
+    "stub": "stub.php",
     "main": false,
     "check-requirements": false,
     "git-tag": "plugin_version",

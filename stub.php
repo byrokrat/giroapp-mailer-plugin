@@ -8,6 +8,8 @@ use byrokrat\giroapp\Plugin\PluginInterface;
 use byrokrat\giroapp\Plugin\EnvironmentInterface;
 use Pimple\Container;
 
+require 'phar://' . __FILE__ . '/vendor/autoload.php';
+
 return new class implements PluginInterface {
     public function loadPlugin(EnvironmentInterface $env): void
     {
