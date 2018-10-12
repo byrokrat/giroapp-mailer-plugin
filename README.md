@@ -1,5 +1,7 @@
 # giroapp-mailer-plugin
 
+[![Build Status](https://img.shields.io/travis/byrokrat/giroapp-mailer-plugin/master.svg?style=flat-square)](https://travis-ci.org/byrokrat/giroapp-mailer-plugin)
+
 Plugin for sending mails on giroapp events.
 
 ## Installation
