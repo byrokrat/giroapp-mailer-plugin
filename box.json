@@ -13,5 +13,6 @@
     "stub": "plugin.php",
     "main": false,
     "check-requirements": false,
+    "git-tag": "plugin_version",
     "algorithm": "SHA512"
 }

@@ -1,0 +1,26 @@
+sudo: false
+
+language: php
+
+php:
+  - 7.2
+  - 7.1
+
+install:
+  - composer install
+  - composer global require chh/bob:^1@alpha
+  - export PATH=$PATH:$HOME/.composer/vendor/bin/
+  - bob install_dev_tools
+
+script:
+  - bob
+
+deploy:
+  provider: releases
+  api_key:
+    secure: cgl/3BKcqchGI4MAv4g2V4OohQ6FiW5FMrw5hDOORcn6hXw/0Ps16gyGlgO2iOMj/niobx3JTDjNrfuQBa5Kt/oxhx+/m5MhmnsP94NGM7kDK6QtKPiILyYEPzFT0Oh42g1S+xUvJj67dJMUT79154Sc6erWGab6q2M0tTTpsgGyjYQ3GdkA+uGXGifTQdfZKkvnFRKDpR6lJZYD+c4lD9+XVt/VzgYtJ9Zy99mRBgVCwu+LuYSuI/a5WXco9Tie+/LpLV6OhV8Ba2qhHelwh7AQ7BPoAKnmJ4M8ILg83cCOsaAMryF13svP1ITqT2NwL06DrRe5ccHweXMmSS0w67BBfQJZp5hnMS7sxvljqDFW+et7ftF4p4iOJhnmFkFhaq+Yx07H00OaCA8UdD9DPqaEYBevbgzin1YJvxzJas9groTbX/us+mYX5pHmdSbm0OuwXrM6Optiauc0Zz94Tek1uGqpZ06vRc8XH74deI/epGhu/9Tr8VBHAT6ACCC9QnK1p45mSwRCYr1hRrcf6d2fRMkOT8KQReEpa7oQSFzKxV/wsfii2jnCMEudlgVx2sr7QuCKT8s2kBiIptF99ZBgGKevXXLnlhcAAB3kFMSCKbnTLRIBF0oAobEnDdq4wDaCghBpVCeUYOz47UKtDWzKMmH+ZA69V8UvGHzvhPM=
+  file: giroapp-mailer-plugin.phar
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: byrokrat/giroapp-mailer-plugin
