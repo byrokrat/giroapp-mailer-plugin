@@ -63,13 +63,15 @@ final class MailingSubscriber implements EventSubscriberInterface
 
             $this->queue->store($message);
 
+            $headers = new HeaderReader($message);
+
             $dispatcher->dispatch(
                 Events::INFO,
                 new LogEvent(
                     sprintf(
                         "Queued message '%s' to '%s'",
-                        iconv_mime_decode((string)$message->getHeader('subject')[0]->getValue()),
-                        iconv_mime_decode((string)$message->getHeader('to')[0]->getValue())
+                        $headers->readHeader('subject'),
+                        $headers->readHeader('to')
                     )
                 )
             );

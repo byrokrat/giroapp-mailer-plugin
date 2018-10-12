@@ -6,7 +6,7 @@ namespace byrokrat\giroappmailerplugin;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-new Genkgo\Mail\FormattedMessageFactory;
+use Genkgo\Mail\FormattedMessageFactory;
 use Genkgo\Mail\Protocol\Smtp\ClientFactory;
 use Genkgo\Mail\TransportInterface;
 use Genkgo\Mail\Transport\SmtpTransport;

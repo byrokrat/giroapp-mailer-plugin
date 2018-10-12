@@ -36,7 +36,7 @@ final class MailerSendCommand implements CommandInterface
         $adapter
             ->setName('mailer:send')
             ->setDescription('Send queued mails')
-            ->setHelp('Send all queued mail messages')
+            ->setHelp('Send all messages queued with the mailer plugin version @plugin_version@')
         ;
     }
 
@@ -45,21 +45,22 @@ final class MailerSendCommand implements CommandInterface
         try {
             while (true) {
                 $message = $this->queue->fetch();
+                $headers = new HeaderReader($message);
                 try {
                     $this->transport->send($message);
                     $output->writeln(
                         sprintf(
                             "Sent message '%s' to '%s'",
-                            iconv_mime_decode((string)$message->getHeader('subject')[0]->getValue()),
-                            iconv_mime_decode((string)$message->getHeader('to')[0]->getValue())
+                            $headers->readHeader('subject'),
+                            $headers->readHeader('to')
                         )
                     );
                 } catch (AbstractProtocolException $e) {
-                    $queue->store($message);
+                    $this->queue->store($message);
                     $output->writeln(
                         sprintf(
                             "Unable to send message to '%s': transport not ready?",
-                            iconv_mime_decode((string)$message->getHeader('to')[0]->getValue())
+                            $headers->readHeader('to')
                         )
                     );
                     break;

@@ -28,7 +28,7 @@ final class MailerStatusCommand implements CommandInterface
         $adapter
             ->setName('mailer:status')
             ->setDescription('Inspect the mail queue')
-            ->setHelp('Display the list of queue mail messages')
+            ->setHelp('Display the list of messages queued with the mailer plugin version @plugin_version@')
         ;
     }
 
@@ -39,11 +39,12 @@ final class MailerStatusCommand implements CommandInterface
         try {
             while (true) {
                 $message = $this->queue->fetch();
+                $headers = new HeaderReader($message);
                 $output->writeln(
                     sprintf(
                         "Message '%s' to '%s'",
-                        iconv_mime_decode((string)$message->getHeader('subject')[0]->getValue()),
-                        iconv_mime_decode((string)$message->getHeader('to')[0]->getValue())
+                        $headers->readHeader('subject'),
+                        $headers->readHeader('to')
                     )
                 );
                 $messages[] = $message;
