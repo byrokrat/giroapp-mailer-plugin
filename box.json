@@ -11,5 +11,6 @@
     "main": false,
     "check-requirements": false,
     "git-tag": "plugin_version",
-    "algorithm": "SHA512"
+    "algorithm": "SHA512",
+    "chmod": "0440"
 }
