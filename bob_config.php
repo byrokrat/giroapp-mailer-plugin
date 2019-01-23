@@ -2,7 +2,10 @@
 
 namespace Bob\BuildConfig;
 
-task('default', ['phpstan', 'sniff', 'phar']);
+task('default', ['test']);
+
+desc('Run all tests');
+task('test', ['phpstan', 'sniff']);
 
 desc('Run statical analysis using phpstan feature tests');
 task('phpstan', function() {
@@ -17,7 +20,7 @@ task('sniff', function() {
 });
 
 desc('Build phar');
-task('phar', function() {
+task('phar', ['test'], function() {
     shell('composer install --prefer-dist --no-dev');
     shell('box compile');
     shell('composer install');

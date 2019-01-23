@@ -6,7 +6,7 @@ namespace byrokrat\giroappmailerplugin;
 
 use Symfony\Component\Finder\Finder;
 
-class TemplateReader
+final class TemplateReader
 {
     /**
      * @var Finder
