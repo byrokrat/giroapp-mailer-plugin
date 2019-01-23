@@ -15,7 +15,7 @@ use Genkgo\Mail\Header\Cc;
 use Genkgo\Mail\Header\Bcc;
 use Genkgo\Mail\Header\ReplyTo;
 
-class MessageFactory
+final class MessageFactory
 {
     /**
      * @var Parser
@@ -35,7 +35,12 @@ class MessageFactory
 
     public function createMessage(string $tmpl, Donor $donor): ?MessageInterface
     {
+        if (!$donor->getEmail()) {
+            return null;
+        }
+
         $result = $this->frontmatterParser->parse($tmpl, $donor);
+
         $meta = array_change_key_case($result->getFrontmatter(), CASE_LOWER);
 
         if (empty(trim($result->getBody()))) {
@@ -46,13 +51,14 @@ class MessageFactory
             ->withHtml($result->getBody())
             ->createMessage()
             ->withHeader(new Subject($meta['subject'] ?? ''))
-            ->withHeader(From::fromEmailAddress($meta['from'] ?? ''));
+            ->withHeader(From::fromEmailAddress($meta['from'] ?? ''))
+            ->withHeader(To::fromSingleRecipient($donor->getEmail()));
 
         if (isset($meta['replyto'])) {
             $message = $message->withHeader(ReplyTo::fromSingleRecipient($meta['replyto']));
         }
 
-        foreach ((array)($meta['to'] ?? $donor->getEmail()) as $to) {
+        foreach ((array)($meta['to'] ?? []) as $to) {
             $message = $message->withHeader(To::fromSingleRecipient($to));
         }
 

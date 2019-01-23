@@ -32,15 +32,14 @@ Supported frontmatter variables are (case insensitive):
 * `Subject`
 * `From`
 * `ReplyTo`
-* `To` (single address or array, defaults to donor mail address if omitted)
+* `To` (single address or array, note that mail is always sent to donor mail address)
 * `Cc` (single address or array)
 * `Bcc` (single address or array)
 
-A template may look something like this:
+A simple template may look like:
 
 ```
 ---
-to: {{getEmail}}
 from: some@mail.com
 ReplyTo: some@other.mail.com
 bcc: keep-a-copy@here.com
@@ -48,6 +47,10 @@ subject: Welcome as a donor
 ---
 <p>Hi {{getName}}, you are now a donor.</p>
 ```
+
+### Ignored donors
+
+Donors that does not have an email address are ignored when generating mails.
 
 ### Ignored templates
 
