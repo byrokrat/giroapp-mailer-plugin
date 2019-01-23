@@ -8,7 +8,6 @@ use byrokrat\giroapp\Console\CommandInterface;
 use byrokrat\giroapp\Console\Adapter;
 use Genkgo\Mail\Queue\QueueInterface;
 use Genkgo\Mail\TransportInterface;
-use Genkgo\Mail\Exception\AbstractProtocolException;
 use Genkgo\Mail\Exception\EmptyQueueException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -55,7 +54,7 @@ final class MailerSendCommand implements CommandInterface
                             $headers->readHeader('to')
                         )
                     );
-                } catch (AbstractProtocolException $e) {
+                } catch (\Exception $e) {
                     $this->queue->store($message);
                     $output->writeln(
                         sprintf(
