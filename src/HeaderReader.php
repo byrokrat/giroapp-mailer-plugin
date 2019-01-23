@@ -27,6 +27,6 @@ final class HeaderReader
             break;
         }
 
-        return iconv_mime_decode($value);
+        return (string)iconv_mime_decode($value);
     }
 }
