@@ -14,7 +14,7 @@ install:
   - bob install_dev_tools
 
 script:
-  - bob
+  - bob phar
 
 deploy:
   provider: releases
