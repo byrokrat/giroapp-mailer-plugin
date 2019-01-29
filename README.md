@@ -16,12 +16,10 @@ Plugin for sending mails on giroapp events.
 mailer_smtp_string = "smtp://user:pass@host/"
 
 ; Directory where mail templates are stored
-; Should be an absolute path
-mailer_template_dir = "templates"
+mailer_template_dir = "%base_dir%/templates"
 
 ; Directory where queued mails are stored
-; Should be an absolute path
-mailer_queue_dir = "queue"
+mailer_queue_dir = "%base_dir%/queue"
 ```
 
 ## Templates
