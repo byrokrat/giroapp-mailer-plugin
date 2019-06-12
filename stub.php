@@ -24,7 +24,10 @@ return new class implements PluginInterface {
         $env->registerCommand($container[MailerSendCommand::CLASS]);
         $env->registerCommand($container[MailerStatusCommand::CLASS]);
 
-        $env->registerSubscriber($container[MailingSubscriber::CLASS]);
+        $listener = $container[DonorStateListener::CLASS];
+        $listener->setEventDispatcher($env->getEventDispatcher());
+
+        $env->registerListener($listener);
     }
 };
 

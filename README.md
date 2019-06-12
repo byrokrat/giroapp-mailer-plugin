@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/travis/byrokrat/giroapp-mailer-plugin/master.svg?style=flat-square)](https://travis-ci.org/byrokrat/giroapp-mailer-plugin)
 
-Plugin for sending mails on giroapp events.
+Plugin for sending mails on donor state transitions.
 
 ## Installation
 
@@ -67,14 +67,12 @@ subject: Only sent if there is a commment in donor
 
 ### Triggering templates
 
-Templates are stored in the `templates` dir postfixed with the event name
-that should trigger message creation. Possible values are:
+Templates are stored in the `templates` dir postfixed with the donor state name
+that should trigger message creation. For example:
 
-* `DONOR_ADDED`
-* `DONOR_REMOVED`
-* `MANDATE_APPROVED`
-* `MANDATE_REVOKED`
-* `MANDATE_INVALIDATED`
+* `foo_template.MANDATE_APPROVED`
+* `bar_template.INACTIVE`
+* `baz_template.PAUSED`
 
 ## The mail queue
 

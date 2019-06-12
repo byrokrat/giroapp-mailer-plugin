@@ -34,8 +34,8 @@ final class DependenciesProvider implements ServiceProviderInterface
             return new MailerStatusCommand($c[QueueInterface::CLASS]);
         };
 
-        $container[MailingSubscriber::CLASS] = function ($c) {
-            return new MailingSubscriber(
+        $container[DonorStateListener::CLASS] = function ($c) {
+            return new DonorStateListener(
                 $c[TemplateReader::CLASS],
                 $c[MessageFactory::CLASS],
                 $c[QueueInterface::CLASS]
