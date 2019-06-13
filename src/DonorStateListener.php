@@ -5,9 +5,8 @@ declare(strict_types = 1);
 namespace byrokrat\giroappmailerplugin;
 
 use byrokrat\giroapp\Event\DonorStateUpdated;
-use byrokrat\giroapp\Event\LogEvent;
 use byrokrat\giroapp\Event\Listener\ListenerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use byrokrat\giroapp\Plugin\EnvironmentInterface;
 use Psr\Log\LogLevel;
 use Genkgo\Mail\Queue\QueueInterface;
 
@@ -22,22 +21,19 @@ final class DonorStateListener implements ListenerInterface
     /** @var QueueInterface */
     private $queue;
 
-    /** @var ?EventDispatcherInterface */
-    private $dispatcher;
+    /** @var EnvironmentInterface */
+    private $giroappEnv;
 
     public function __construct(
         TemplateReader $templateReader,
         MessageFactory $messageFactory,
-        QueueInterface $queue
+        QueueInterface $queue,
+        EnvironmentInterface $giroappEnv
     ) {
         $this->templateReader = $templateReader;
         $this->messageFactory = $messageFactory;
         $this->queue = $queue;
-    }
-
-    public function setEventDispatcher(EventDispatcherInterface $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
+        $this->giroappEnv = $giroappEnv;
     }
 
     public function __invoke(DonorStateUpdated $event)
@@ -55,20 +51,17 @@ final class DonorStateListener implements ListenerInterface
 
             $this->queue->store($message);
 
-            if ($this->dispatcher) {
-                $headers = new HeaderReader($message);
-                $this->dispatcher->dispatch(
-                    new LogEvent(
-                        sprintf(
-                            "Queued message '%s' to '%s'",
-                            $headers->readHeader('subject'),
-                            $headers->readHeader('to')
-                        ),
-                        ['new_state' => $stateId],
-                        LogLevel::NOTICE
-                    )
-                );
-            }
+            $headers = new HeaderReader($message);
+
+            $this->giroappEnv->log(
+                LogLevel::NOTICE,
+                sprintf(
+                    "Queued message '%s' to '%s'",
+                    $headers->readHeader('subject'),
+                    $headers->readHeader('to')
+                ),
+                ['new_state' => $stateId]
+            );
         }
     }
 }

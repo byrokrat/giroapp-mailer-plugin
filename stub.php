@@ -15,7 +15,7 @@ return new class implements PluginInterface {
     {
         $container = new Container;
 
-        $container->register(new DependenciesProvider);
+        $container->register(new DependenciesProvider($env));
 
         $container['smtp_string'] = $env->readConfig('mailer_smtp_string');
         $container['template_dir'] = $env->readConfig('mailer_template_dir');
@@ -24,10 +24,7 @@ return new class implements PluginInterface {
         $env->registerCommand($container[MailerSendCommand::CLASS]);
         $env->registerCommand($container[MailerStatusCommand::CLASS]);
 
-        $listener = $container[DonorStateListener::CLASS];
-        $listener->setEventDispatcher($env->getEventDispatcher());
-
-        $env->registerListener($listener);
+        $env->registerListener($container[DonorStateListener::CLASS]);
     }
 };
 

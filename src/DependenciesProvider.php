@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace byrokrat\giroappmailerplugin;
 
+use byrokrat\giroapp\Plugin\EnvironmentInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Genkgo\Mail\FormattedMessageFactory;
@@ -21,6 +22,14 @@ use hkod\frontmatter\YamlParser;
 
 final class DependenciesProvider implements ServiceProviderInterface
 {
+    /** @var EnvironmentInterface */
+    private $giroappEnv;
+
+    public function __construct(EnvironmentInterface $giroappEnv)
+    {
+        $this->giroappEnv = $giroappEnv;
+    }
+
     public function register(Container $container)
     {
         $container[MailerSendCommand::CLASS] = function ($c) {
@@ -38,7 +47,8 @@ final class DependenciesProvider implements ServiceProviderInterface
             return new DonorStateListener(
                 $c[TemplateReader::CLASS],
                 $c[MessageFactory::CLASS],
-                $c[QueueInterface::CLASS]
+                $c[QueueInterface::CLASS],
+                $this->giroappEnv
             );
         };
 
