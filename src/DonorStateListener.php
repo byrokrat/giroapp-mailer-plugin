@@ -6,8 +6,7 @@ namespace byrokrat\giroappmailerplugin;
 
 use byrokrat\giroapp\Event\DonorStateUpdated;
 use byrokrat\giroapp\Event\Listener\ListenerInterface;
-use byrokrat\giroapp\Plugin\EnvironmentInterface;
-use Psr\Log\LogLevel;
+use Psr\Log\LoggerInterface;
 use Genkgo\Mail\Queue\QueueInterface;
 
 final class DonorStateListener implements ListenerInterface
@@ -21,19 +20,19 @@ final class DonorStateListener implements ListenerInterface
     /** @var QueueInterface */
     private $queue;
 
-    /** @var EnvironmentInterface */
-    private $giroappEnv;
+    /** @var LoggerInterface */
+    private $logger;
 
     public function __construct(
         TemplateReader $templateReader,
         MessageFactory $messageFactory,
         QueueInterface $queue,
-        EnvironmentInterface $giroappEnv
+        LoggerInterface $logger
     ) {
         $this->templateReader = $templateReader;
         $this->messageFactory = $messageFactory;
         $this->queue = $queue;
-        $this->giroappEnv = $giroappEnv;
+        $this->logger = $logger;
     }
 
     public function __invoke(DonorStateUpdated $event)
@@ -53,8 +52,7 @@ final class DonorStateListener implements ListenerInterface
 
             $headers = new HeaderReader($message);
 
-            $this->giroappEnv->log(
-                LogLevel::NOTICE,
+            $this->logger->notice(
                 sprintf(
                     "Queued message '%s' to '%s'",
                     $headers->readHeader('subject'),

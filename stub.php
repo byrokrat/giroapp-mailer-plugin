@@ -6,6 +6,7 @@ namespace byrokrat\giroappmailerplugin;
 
 use byrokrat\giroapp\Plugin\PluginInterface;
 use byrokrat\giroapp\Plugin\EnvironmentInterface;
+use Psr\Log\LoggerInterface;
 use Pimple\Container;
 
 require 'phar://' . __FILE__ . '/vendor/autoload.php';
@@ -15,11 +16,13 @@ return new class implements PluginInterface {
     {
         $container = new Container;
 
-        $container->register(new DependenciesProvider($env));
+        $container->register(new DependenciesProvider);
 
         $container['smtp_string'] = $env->readConfig('mailer_smtp_string');
         $container['template_dir'] = $env->readConfig('mailer_template_dir');
         $container['queue_dir'] = $env->readConfig('mailer_queue_dir');
+        $container['queue_dir'] = $env->readConfig('mailer_queue_dir');
+        $container[LoggerInterface::CLASS] = $env->getLogger();
 
         $env->registerCommand($container[MailerSendCommand::CLASS]);
         $env->registerCommand($container[MailerStatusCommand::CLASS]);
