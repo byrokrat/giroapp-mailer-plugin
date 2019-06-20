@@ -9,7 +9,7 @@ task('test', ['phpstan', 'sniff']);
 
 desc('Run statical analysis using phpstan feature tests');
 task('phpstan', function() {
-    shell('phpstan analyze -l 7 src');
+    shell('phpstan analyze -l 7 src stub.php');
     println('Phpstan analysis passed');
 });
 
