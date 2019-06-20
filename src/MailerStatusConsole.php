@@ -4,14 +4,14 @@ declare(strict_types = 1);
 
 namespace byrokrat\giroappmailerplugin;
 
-use byrokrat\giroapp\Console\CommandInterface;
-use byrokrat\giroapp\Console\Adapter;
+use byrokrat\giroapp\Console\ConsoleInterface;
 use Genkgo\Mail\Queue\QueueInterface;
 use Genkgo\Mail\Exception\EmptyQueueException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class MailerStatusCommand implements CommandInterface
+final class MailerStatusConsole implements ConsoleInterface
 {
     /**
      * @var QueueInterface
@@ -23,9 +23,9 @@ final class MailerStatusCommand implements CommandInterface
         $this->queue = $queue;
     }
 
-    public function configure(Adapter $adapter): void
+    public function configure(Command $command): void
     {
-        $adapter
+        $command
             ->setName('mailer:status')
             ->setDescription('Inspect the mail queue')
             ->setHelp('Display the list of messages queued with the mailer plugin version @plugin_version@')

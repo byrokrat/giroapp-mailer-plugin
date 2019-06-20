@@ -24,8 +24,8 @@ return new class implements PluginInterface {
         $container['queue_dir'] = $env->readConfig('mailer_queue_dir');
         $container[LoggerInterface::CLASS] = $env->getLogger();
 
-        $env->registerCommand($container[MailerSendCommand::CLASS]);
-        $env->registerCommand($container[MailerStatusCommand::CLASS]);
+        $env->registerCommand($container[MailerSendConsole::CLASS]);
+        $env->registerCommand($container[MailerStatusConsole::CLASS]);
 
         $env->registerListener($container[DonorStateListener::CLASS]);
     }

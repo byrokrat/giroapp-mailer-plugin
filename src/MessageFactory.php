@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace byrokrat\giroappmailerplugin;
 
-use byrokrat\giroapp\Model\Donor;
+use byrokrat\giroapp\Domain\Donor;
 use hkod\frontmatter\Parser;
 use Genkgo\Mail\MessageInterface;
 use Genkgo\Mail\FormattedMessageFactory;
