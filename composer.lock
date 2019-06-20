@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "934f92ecb8012ab45d48b24e10ca7e83",
+    "content-hash": "ce205add5d6aa1c45e963eae0062242e",
     "packages": [
         {
             "name": "genkgo/mail",
@@ -2302,7 +2302,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1"
+        "php": ">=7.2"
     },
     "platform-dev": []
 }
