@@ -30,7 +30,7 @@ return new class implements PluginInterface {
         $env->registerConsoleCommand($container[MailerSendConsole::CLASS]);
         $env->registerConsoleCommand($container[MailerStatusConsole::CLASS]);
 
-        $env->registerListener($container[DonorStateListener::CLASS]);
+        $env->registerListener($container[DonorEventListener::CLASS]);
     }
 };
 

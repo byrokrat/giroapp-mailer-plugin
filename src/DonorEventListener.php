@@ -4,12 +4,14 @@ declare(strict_types = 1);
 
 namespace byrokrat\giroappmailerplugin;
 
+use byrokrat\giroapp\Event\DonorEvent;
 use byrokrat\giroapp\Event\DonorStateUpdated;
 use byrokrat\giroapp\Event\Listener\ListenerInterface;
-use Psr\Log\LoggerInterface;
+use byrokrat\giroapp\Utils\ClassIdExtractor;
 use Genkgo\Mail\Queue\QueueInterface;
+use Psr\Log\LoggerInterface;
 
-final class DonorStateListener implements ListenerInterface
+final class DonorEventListener implements ListenerInterface
 {
     /** @var TemplateReader */
     private $templateReader;
@@ -35,14 +37,16 @@ final class DonorStateListener implements ListenerInterface
         $this->logger = $logger;
     }
 
-    public function __invoke(DonorStateUpdated $event)
+    public function __invoke(DonorEvent $event)
     {
         $donor = $event->getDonor();
 
-        $stateId = $event->getNewState()->getStateId();
+        $templateId = $event instanceof DonorStateUpdated
+            ? $event->getNewState()->getStateId()
+            : (string)new ClassIdExtractor($event);
 
-        foreach ($this->templateReader->readTemplates($stateId) as $tmpl) {
-            $message = $this->messageFactory->createMessage($tmpl, $donor);
+        foreach ($this->templateReader->readTemplates($templateId) as $template) {
+            $message = $this->messageFactory->createMessage($template, $donor);
 
             if (!$message) {
                 continue;
@@ -57,8 +61,7 @@ final class DonorStateListener implements ListenerInterface
                     "Queued message '%s' to '%s'",
                     $headers->readHeader('subject'),
                     $headers->readHeader('to')
-                ),
-                ['new_state' => $stateId]
+                )
             );
         }
     }

@@ -18,6 +18,9 @@ final class TemplateReader
         $this->finder = $finder;
     }
 
+    /**
+     * @return iterable & string[]
+     */
     public function readTemplates(string $postfix): iterable
     {
         foreach ($this->finder as $file) {

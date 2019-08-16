@@ -67,12 +67,12 @@ subject: Only sent if there is a commment in donor
 
 ### Triggering templates
 
-Templates are stored in the `templates` dir postfixed with the donor state name
-that should trigger message creation. For example:
+Templates are stored in the `templates` dir postfixed with the donor event or
+state name that should trigger message creation. For example:
 
-* `foo_template.MANDATE_APPROVED`
-* `bar_template.INACTIVE`
-* `baz_template.PAUSED`
+* `foo_template.MANDATE_SENT`
+* `bar_template.REVOCATION_SENT`
+* `baz_template.DONOR_POSTAL_ADDRESS_UPDATED`
 
 ## The mail queue
 
