@@ -4,25 +4,13 @@ declare(strict_types = 1);
 
 namespace byrokrat\giroappmailerplugin;
 
-use byrokrat\giroapp\Console\ConsoleInterface;
-use Genkgo\Mail\Queue\QueueInterface;
 use Genkgo\Mail\Exception\EmptyQueueException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class MailerClearConsole implements ConsoleInterface
+final class MailerClearConsole extends AbstractBaseConsole
 {
-    /**
-     * @var QueueInterface
-     */
-    private $queue;
-
-    public function __construct(QueueInterface $queue)
-    {
-        $this->queue = $queue;
-    }
-
     public function configure(Command $command): void
     {
         $command
@@ -38,7 +26,7 @@ final class MailerClearConsole implements ConsoleInterface
             while (true) {
                 $message = $this->queue->fetch();
                 $headers = new HeaderReader($message);
-                $output->writeln(
+                $this->logger->notice(
                     sprintf(
                         "Removed message '%s' to '%s'",
                         $headers->readHeader('subject'),
@@ -47,7 +35,7 @@ final class MailerClearConsole implements ConsoleInterface
                 );
             }
         } catch (EmptyQueueException $e) {
-            $output->writeln("Mail queue cleared..");
+            $output->writeln("No more messages..");
         }
     }
 }
