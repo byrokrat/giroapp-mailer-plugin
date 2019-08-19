@@ -24,6 +24,14 @@ final class DependenciesProvider implements ServiceProviderInterface
 {
     public function register(Container $container)
     {
+        $container[MailerClearConsole::CLASS] = function ($c) {
+            return new MailerClearConsole($c[QueueInterface::CLASS]);
+        };
+
+        $container[MailerRemoveConsole::CLASS] = function ($c) {
+            return new MailerRemoveConsole($c[QueueInterface::CLASS]);
+        };
+
         $container[MailerSendConsole::CLASS] = function ($c) {
             return new MailerSendConsole(
                 $c[QueueInterface::CLASS],
