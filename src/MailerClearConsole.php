@@ -11,7 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class MailerStatusConsole implements ConsoleInterface
+final class MailerClearConsole implements ConsoleInterface
 {
     /**
      * @var QueueInterface
@@ -26,35 +26,28 @@ final class MailerStatusConsole implements ConsoleInterface
     public function configure(Command $command): void
     {
         $command
-            ->setName('mailer:status')
-            ->setDescription('Inspect the mail queue')
-            ->setHelp('Display the list of messages queued [giroapp-mailer-plugin @plugin_version@]')
+            ->setName('mailer:clear')
+            ->setDescription('Clear the mail queue without sending mails')
+            ->setHelp('Clear the mail queue without sending mails [giroapp-mailer-plugin @plugin_version@]')
         ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $messages = [];
-
         try {
             while (true) {
                 $message = $this->queue->fetch();
                 $headers = new HeaderReader($message);
                 $output->writeln(
                     sprintf(
-                        "Message '%s' to '%s'",
+                        "Removed message '%s' to '%s'",
                         $headers->readHeader('subject'),
                         $headers->readHeader('to')
                     )
                 );
-                $messages[] = $message;
             }
         } catch (EmptyQueueException $e) {
-            $output->writeln("No more messages..");
-        }
-
-        foreach ($messages as $message) {
-            $this->queue->store($message);
+            $output->writeln("Mail queue cleared..");
         }
     }
 }

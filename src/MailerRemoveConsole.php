@@ -8,10 +8,11 @@ use byrokrat\giroapp\Console\ConsoleInterface;
 use Genkgo\Mail\Queue\QueueInterface;
 use Genkgo\Mail\Exception\EmptyQueueException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class MailerStatusConsole implements ConsoleInterface
+final class MailerRemoveConsole implements ConsoleInterface
 {
     /**
      * @var QueueInterface
@@ -26,34 +27,44 @@ final class MailerStatusConsole implements ConsoleInterface
     public function configure(Command $command): void
     {
         $command
-            ->setName('mailer:status')
-            ->setDescription('Inspect the mail queue')
-            ->setHelp('Display the list of messages queued [giroapp-mailer-plugin @plugin_version@]')
+            ->setName('mailer:rm')
+            ->setDescription('Remove all mails to recipient')
+            ->setHelp('Remove all mails to recipient without sending them [giroapp-mailer-plugin @plugin_version@]')
+            ->addArgument('recipient', InputArgument::REQUIRED, 'Recipient mail address to remove');
         ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $messages = [];
+        $toRemoveAddress = $input->getArgument('recipient');
+
+        $messagesToKeep = [];
 
         try {
             while (true) {
                 $message = $this->queue->fetch();
                 $headers = new HeaderReader($message);
+
+                $targetAddress = $headers->readHeader('to');
+
+                if ($toRemoveAddress != $targetAddress) {
+                    $messagesToKeep[] = $message;
+                    continue;
+                }
+
                 $output->writeln(
                     sprintf(
-                        "Message '%s' to '%s'",
+                        "Removed message '%s' to '%s'",
                         $headers->readHeader('subject'),
-                        $headers->readHeader('to')
+                        $targetAddress
                     )
                 );
-                $messages[] = $message;
             }
         } catch (EmptyQueueException $e) {
             $output->writeln("No more messages..");
         }
 
-        foreach ($messages as $message) {
+        foreach ($messagesToKeep as $message) {
             $this->queue->store($message);
         }
     }

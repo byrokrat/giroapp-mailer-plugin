@@ -16,10 +16,10 @@ Plugin for sending mails on donor state transitions.
 mailer_smtp_string = "smtp://user:pass@host/"
 
 ; Directory where mail templates are stored
-mailer_template_dir = "%base_dir%/templates"
+mailer_template_dir = "%base_dir%/mailer_templates"
 
 ; Directory where queued mails are stored
-mailer_queue_dir = "%base_dir%/queue"
+mailer_queue_dir = "%base_dir%/mailer_queue"
 ```
 
 ## Templates
@@ -67,8 +67,8 @@ subject: Only sent if there is a commment in donor
 
 ### Triggering templates
 
-Templates are stored in the `templates` dir postfixed with the donor event or
-state name that should trigger message creation. For example:
+Templates are stored in the `mailer_templates` dir postfixed with the donor
+event or state name that should trigger message creation. For example:
 
 * `foo_template.MANDATE_SENT`
 * `bar_template.REVOCATION_SENT`
@@ -76,16 +76,28 @@ state name that should trigger message creation. For example:
 
 ## The mail queue
 
-Plugin registers two giroapp commands.
+Plugin registers four giroapp commands.
 
-To inspect the current mail queue use
+To inspect the current mail queue
 
 ```shell
 giroapp mailer:status
 ```
 
-To send mails in queue use
+To send mails in queue
 
 ```shell
 giroapp mailer:send
+```
+
+To clear the queue without sending mails
+
+```shell
+giroapp mailer:clear
+```
+
+To remove all mails to recipient without sending them
+
+```shell
+giroapp mailer:rm <recipient>
 ```

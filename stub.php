@@ -27,6 +27,8 @@ return new class implements PluginInterface {
         $container['queue_dir'] = $env->readConfig('mailer_queue_dir');
         $container[LoggerInterface::CLASS] = $env->getLogger();
 
+        $env->registerConsoleCommand($container[MailerClearConsole::CLASS]);
+        $env->registerConsoleCommand($container[MailerRemoveConsole::CLASS]);
         $env->registerConsoleCommand($container[MailerSendConsole::CLASS]);
         $env->registerConsoleCommand($container[MailerStatusConsole::CLASS]);
 

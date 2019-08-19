@@ -35,7 +35,7 @@ final class MailerSendConsole implements ConsoleInterface
         $command
             ->setName('mailer:send')
             ->setDescription('Send queued mails')
-            ->setHelp('Send all messages queued with the mailer plugin version @plugin_version@')
+            ->setHelp('Send all messages queued [giroapp-mailer-plugin @plugin_version@]')
         ;
     }
 
