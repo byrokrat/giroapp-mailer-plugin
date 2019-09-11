@@ -7,7 +7,7 @@ php:
   - 7.2
 
 install:
-  - composer installv --prefer-dist --no-dev
+  - composer install --prefer-dist --no-dev
   - composer global require humbug/box:^3
   - export PATH=$PATH:$HOME/.config/composer/vendor/bin/
 
