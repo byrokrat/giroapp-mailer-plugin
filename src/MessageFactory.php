@@ -4,7 +4,8 @@ declare(strict_types = 1);
 
 namespace byrokrat\giroappmailerplugin;
 
-use byrokrat\giroapp\Domain\Donor;
+use byrokrat\giroapp\Event\DonorEvent;
+use byrokrat\giroapp\Event\DonorEmailUpdated;
 use hkod\frontmatter\Parser;
 use Genkgo\Mail\MessageInterface;
 use Genkgo\Mail\FormattedMessageFactory;
@@ -33,13 +34,17 @@ final class MessageFactory
         $this->messageFactory = $factory;
     }
 
-    public function createMessage(string $tmpl, Donor $donor): ?MessageInterface
+    public function createMessage(string $tmpl, DonorEvent $event): ?MessageInterface
     {
-        if (!$donor->getEmail()) {
+        $targetMail = $event instanceof DonorEmailUpdated
+            ? $event->getNewEmail()
+            : $event->getDonor()->getEmail();
+
+        if (!$targetMail) {
             return null;
         }
 
-        $result = $this->frontmatterParser->parse($tmpl, $donor);
+        $result = $this->frontmatterParser->parse($tmpl, $event);
 
         $meta = array_change_key_case($result->getFrontmatter(), CASE_LOWER);
 
@@ -52,7 +57,7 @@ final class MessageFactory
             ->createMessage()
             ->withHeader(new Subject($meta['subject'] ?? ''))
             ->withHeader(From::fromEmailAddress($meta['from'] ?? ''))
-            ->withHeader(To::fromSingleRecipient($donor->getEmail()));
+            ->withHeader(To::fromSingleRecipient($targetMail));
 
         if (isset($meta['replyto'])) {
             $message = $message->withHeader(ReplyTo::fromSingleRecipient($meta['replyto']));

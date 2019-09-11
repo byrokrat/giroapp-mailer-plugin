@@ -12,5 +12,5 @@
     "check-requirements": false,
     "git-tag": "plugin_version",
     "algorithm": "SHA512",
-    "chmod": "0440"
+    "chmod": "0660"
 }

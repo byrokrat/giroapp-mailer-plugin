@@ -7,13 +7,12 @@ php:
   - 7.2
 
 install:
-  - composer install
-  - composer global require chh/bob:^1@alpha
-  - export PATH=$PATH:$HOME/.config/composer/vendor/bin/:$HOME/.composer/vendor/bin/
-  - bob install_dev_tools
+  - composer installv --prefer-dist --no-dev
+  - composer global require humbug/box:^3
+  - export PATH=$PATH:$HOME/.config/composer/vendor/bin/
 
 script:
-  - bob phar
+  - box compile
 
 deploy:
   provider: releases
@@ -24,3 +23,4 @@ deploy:
   on:
     tags: true
     repo: byrokrat/giroapp-mailer-plugin
+    condition: ${TRAVIS_PHP_VERSION:0:3} == "7.2"

@@ -20,6 +20,7 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.2",
+        "ext-intl": "*",
         "pimple/pimple": "^3.0",
         "hkod/frontmatter": "^1",
         "symfony/yaml": "^4",
@@ -28,6 +29,6 @@
         "mustache/mustache": "^2.5"
     },
     "require-dev": {
-        "byrokrat/giroapp": "^1@alpha"
+        "byrokrat/giroapp": "^1@beta"
     }
 }

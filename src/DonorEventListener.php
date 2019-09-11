@@ -39,14 +39,12 @@ final class DonorEventListener implements ListenerInterface
 
     public function __invoke(DonorEvent $event)
     {
-        $donor = $event->getDonor();
-
         $templateId = $event instanceof DonorStateUpdated
             ? $event->getNewState()->getStateId()
             : (string)new ClassIdExtractor($event);
 
         foreach ($this->templateReader->readTemplates($templateId) as $template) {
-            $message = $this->messageFactory->createMessage($template, $donor);
+            $message = $this->messageFactory->createMessage($template, $event);
 
             if (!$message) {
                 continue;

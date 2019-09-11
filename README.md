@@ -22,7 +22,16 @@ mailer_template_dir = "%base_dir%/mailer_templates"
 mailer_queue_dir = "%base_dir%/mailer_queue"
 ```
 
-## Templates
+## Triggering templates
+
+Templates are stored in the `mailer_templates` dir postfixed with the donor
+event or state name that should trigger message creation. For example:
+
+* `foo_template.MANDATE_SENT`
+* `bar_template.REVOCATION_SENT`
+* `baz_template.DONOR_POSTAL_ADDRESS_UPDATED`
+
+## Writing templates
 
 Templates are html formatted mustache templates with a YAML frontmatter.
 Supported frontmatter variables are (case insensitive):
@@ -43,7 +52,7 @@ ReplyTo: some@other.mail.com
 bcc: keep-a-copy@here.com
 subject: Welcome as a donor
 ---
-<p>Hi {{getName}}, you are now a donor.</p>
+<p>Hi {{getDonor.getName}}, you are now a donor.</p>
 ```
 
 ### Ignored donors
@@ -60,19 +69,29 @@ feature to make a mail conditional on some donor feature.
 from: some@mail.com
 subject: Only sent if there is a commment in donor
 ---
-{{# getComment}}
+{{# getDonor.getComment}}
     There is a comment, so this mail will be generated..
-{{/ getComment}}
+{{/ getDonor.getComment}}
 ```
 
-### Triggering templates
+### An example temple on address updates
 
-Templates are stored in the `mailer_templates` dir postfixed with the donor
-event or state name that should trigger message creation. For example:
+When listening to update events make sure to access the updated value directly
+from the event object (use `getNewPostalAddress` instead of `getDonor.getPostalAddress`).
 
-* `foo_template.MANDATE_SENT`
-* `bar_template.REVOCATION_SENT`
-* `baz_template.DONOR_POSTAL_ADDRESS_UPDATED`
+```
+---
+from: some@mail.com
+Subject: Address updated
+---
+<p>Hi {{getDonor.getName}}!</p>
+
+<p>We have updated your address</p>
+
+<pre>
+{{getNewPostalAddress}}
+</pre>
+```
 
 ## The mail queue
 
