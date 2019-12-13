@@ -18,13 +18,18 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "config": {
+        "platform": {
+            "php": "7.2.9"
+        }
+    },
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.2.9",
         "ext-intl": "*",
         "pimple/pimple": "^3.0",
         "hkod/frontmatter": "^1",
-        "symfony/yaml": "^4",
-        "symfony/finder": "^4",
+        "symfony/yaml": "^5",
+        "symfony/finder": "^5",
         "genkgo/mail": "^2.2",
         "mustache/mustache": "^2.5"
     },
