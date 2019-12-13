@@ -28,7 +28,7 @@ Templates are stored in the `mailer_templates` dir postfixed with the donor
 event or state name that should trigger message creation. For example:
 
 * `foo_template.MANDATE_SENT`
-* `bar_template.REVOCATION_SENT`
+* `bar_template.REVOKED`
 * `baz_template.DONOR_POSTAL_ADDRESS_UPDATED`
 
 ## Writing templates
