@@ -22,6 +22,9 @@ use Psr\Log\LoggerInterface;
 
 final class DependenciesProvider implements ServiceProviderInterface
 {
+    /**
+     * @return void
+     */
     public function register(Container $container)
     {
         $container[MailerClearConsole::CLASS] = function ($c) {

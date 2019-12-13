@@ -37,7 +37,7 @@ final class DonorEventListener implements ListenerInterface
         $this->logger = $logger;
     }
 
-    public function __invoke(DonorEvent $event)
+    public function __invoke(DonorEvent $event): void
     {
         $templateId = $event instanceof DonorStateUpdated
             ? $event->getNewState()->getStateId()
