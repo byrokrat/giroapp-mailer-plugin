@@ -20,11 +20,11 @@
     "prefer-stable": true,
     "config": {
         "platform": {
-            "php": "7.2.9"
+            "php": "7.4.0"
         }
     },
     "require": {
-        "php": ">=7.2.9",
+        "php": ">=7.4",
         "ext-intl": "*",
         "pimple/pimple": "^3.0",
         "hkod/frontmatter": "^1",

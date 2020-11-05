@@ -4,8 +4,6 @@ language: php
 
 php:
   - 7.4
-  - 7.3
-  - 7.2
 
 install:
   - composer install --prefer-dist --no-dev
@@ -24,4 +22,4 @@ deploy:
   on:
     tags: true
     repo: byrokrat/giroapp-mailer-plugin
-    condition: ${TRAVIS_PHP_VERSION:0:3} == "7.2"
+    condition: ${TRAVIS_PHP_VERSION:0:3} == "7.4"
