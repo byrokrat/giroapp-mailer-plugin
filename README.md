@@ -105,7 +105,7 @@ Plugin registers four giroapp commands.
 To inspect the current mail queue
 
 ```shell
-giroapp mailer:status
+giroapp mailer:list
 ```
 
 To send mails in queue
