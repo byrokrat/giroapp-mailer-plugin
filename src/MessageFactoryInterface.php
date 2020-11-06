@@ -18,33 +18,9 @@
  * Copyright 2018-20 Hannes Forsgård
  */
 
-declare(strict_types = 1);
+namespace byrokrat\giroapp\Mailer;
 
-namespace byrokrat\giroappmailerplugin;
-
-use Genkgo\Mail\MessageInterface;
-
-final class HeaderReader
+interface MessageFactoryInterface
 {
-    /**
-     * @var MessageInterface
-     */
-    private $message;
-
-    public function __construct(MessageInterface $message)
-    {
-        $this->message = $message;
-    }
-
-    public function readHeader(string $name): string
-    {
-        $value = '';
-
-        foreach ($this->message->getHeader($name) as $header) {
-            $value = (string)$header->getValue();
-            break;
-        }
-
-        return (string)iconv_mime_decode($value);
-    }
+    public function createMessage(Template $template): MessageInterface;
 }

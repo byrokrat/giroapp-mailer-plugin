@@ -20,29 +20,74 @@
 
 declare(strict_types = 1);
 
-namespace byrokrat\giroappmailerplugin;
+namespace byrokrat\giroapp\Mailer;
 
+use byrokrat\giroapp\Event\DonorEvent;
+use byrokrat\giroapp\Event\DonorEmailUpdated;
+use byrokrat\giroapp\Event\DonorStateUpdated;
+use byrokrat\giroapp\Utils\ClassIdExtractor;
+use hkod\frontmatter\Parser as FrontmatterParser;
 use Symfony\Component\Finder\Finder;
 
 final class TemplateReader
 {
-    /**
-     * @var Finder
-     */
-    private $finder;
+    private Finder $finder;
+    private FrontmatterParser $frontmatterParser;
 
-    public function __construct(Finder $finder)
+    // TODO använd filesystem istället...
+    public function __construct(Finder $finder, FrontmatterParser $frontmatterParser)
     {
+        $this->frontmatterParser = $frontmatterParser;
         $this->finder = $finder;
     }
 
     /**
-     * @return iterable & string[]
+     * @return \Generator<Template>
      */
-    public function readTemplates(string $postfix): iterable
+    public function getTemplatesForEvent(DonorEvent $event): \Generator
+    {
+        $toAddress = $event instanceof DonorEmailUpdated
+            ? $event->getNewEmail()
+            : $event->getDonor()->getEmail();
+
+        if (!$toAddress) {
+            return;
+        }
+
+        $templateId = $event instanceof DonorStateUpdated
+            ? $event->getNewState()->getStateId()
+            : (string)new ClassIdExtractor($event);
+
+        foreach ($this->getRawTemplatesForExtension($templateId) as $raw) {
+            $parseResult = $this->frontmatterParser->parse($raw, $event);
+
+            $metadata = array_change_key_case($parseResult->getFrontmatter(), CASE_LOWER);
+
+            $body = trim($parseResult->getBody());
+
+            if (empty($body)) {
+                continue;
+            }
+
+            yield new Template(
+                $body,
+                $metadata['subject'] ?? '',
+                $metadata['from'] ?? '',
+                $metadata['reply-to'] ?? $metadata['replyto'] ?? '',
+                $toAddress,
+                (array)($metadata['cc'] ?? []),
+                (array)($metadata['bcc'] ?? [])
+            );
+        }
+    }
+
+    /**
+     * @return \Generator<string>
+     */
+    private function getRawTemplatesForExtension(string $extension): \Generator
     {
         foreach ($this->finder as $file) {
-            if (preg_match("/\.$postfix$/", $file->getFilename())) {
+            if (preg_match("/\.$extension$/", $file->getFilename())) {
                 yield $file->getContents();
             }
         }

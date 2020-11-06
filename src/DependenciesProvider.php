@@ -20,86 +20,92 @@
 
 declare(strict_types = 1);
 
-namespace byrokrat\giroappmailerplugin;
+namespace byrokrat\giroapp\Mailer;
 
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
-use Genkgo\Mail\FormattedMessageFactory;
-use Genkgo\Mail\Protocol\Smtp\ClientFactory;
-use Genkgo\Mail\TransportInterface;
-use Genkgo\Mail\Transport\SmtpTransport;
-use Genkgo\Mail\Transport\EnvelopeFactory;
-use Genkgo\Mail\Queue\QueueInterface;
-use Genkgo\Mail\Queue\FilesystemQueue;
-use Symfony\Component\Finder\Finder;
-use hkod\frontmatter\Parser as FrontmatterParser;
-use hkod\frontmatter\ParserBuilder;
-use hkod\frontmatter\MustacheParser;
-use hkod\frontmatter\YamlParser;
-use Psr\Log\LoggerInterface;
-
-final class DependenciesProvider implements ServiceProviderInterface
+final class DependenciesProvider implements \Pimple\ServiceProviderInterface
 {
-    /**
-     * @return void
-     */
-    public function register(Container $container)
+    public function register(\Pimple\Container $container): void
     {
-        $container[MailerClearConsole::CLASS] = function ($c) {
-            return new MailerClearConsole($c[LoggerInterface::CLASS], $c[QueueInterface::CLASS]);
+        $container[MailerClearConsole::class] = function ($c) {
+            return new MailerClearConsole($c[MessageRepositoryInterface::class], $c[\Psr\Log\LoggerInterface::class]);
         };
 
-        $container[MailerRemoveConsole::CLASS] = function ($c) {
-            return new MailerRemoveConsole($c[LoggerInterface::CLASS], $c[QueueInterface::CLASS]);
+        $container[MailerListConsole::class] = function ($c) {
+            return new MailerListConsole($c[MessageRepositoryInterface::class]);
         };
 
-        $container[MailerSendConsole::CLASS] = function ($c) {
+        $container[MailerRemoveConsole::class] = function ($c) {
+            return new MailerRemoveConsole($c[MessageRepositoryInterface::class], $c[\Psr\Log\LoggerInterface::class]);
+        };
+
+        $container[MailerSendConsole::class] = function ($c) {
             return new MailerSendConsole(
-                $c[LoggerInterface::CLASS],
-                $c[QueueInterface::CLASS],
-                $c[TransportInterface::CLASS]
+                $c[MessageRepositoryInterface::class],
+                $c[TransportInterface::class],
+                $c[\Psr\Log\LoggerInterface::class]
             );
         };
 
-        $container[MailerStatusConsole::CLASS] = function ($c) {
-            return new MailerStatusConsole($c[LoggerInterface::CLASS], $c[QueueInterface::CLASS]);
+        $container[MailStatistic::class] = function ($c) {
+            return new MailStatistic($c[MessageRepositoryInterface::class]);
         };
 
-        $container[DonorEventListener::CLASS] = function ($c) {
-            return new DonorEventListener(
-                $c[TemplateReader::CLASS],
-                $c[MessageFactory::CLASS],
-                $c[QueueInterface::CLASS],
-                $c[LoggerInterface::CLASS]
+        $container[MailCreatingListener::class] = function ($c) {
+            return new MailCreatingListener(
+                $c[MessageFactoryInterface::class],
+                $c[MessageBuffer::class],
+                $c[TemplateReader::class],
+                $c[\Psr\Log\LoggerInterface::class]
             );
         };
 
-        $container[TemplateReader::CLASS] = function ($c) {
-            return new TemplateReader((new Finder)->files()->in($c['template_dir']));
-        };
-
-        $container[MessageFactory::CLASS] = function ($c) {
-            return new MessageFactory(
-                $c[FrontmatterParser::CLASS],
-                new FormattedMessageFactory
+        $container[MailQueueingListener::class] = function ($c) {
+            return new MailQueueingListener(
+                $c[MessageBuffer::class],
+                $c[MessageRepositoryInterface::class],
+                $c[\Psr\Log\LoggerInterface::class]
             );
         };
 
-        $container[FrontmatterParser::CLASS] = function ($c) {
-            return (new ParserBuilder)->addFrontmatterPass(new MustacheParser)
-                ->addFrontmatterPass(new YamlParser)
-                ->addBodyPass(new MustacheParser)
+        $container[MessageBuffer::class] = function ($c) {
+            return new MessageBuffer;
+        };
+
+        $container[TemplateReader::class] = function ($c) {
+            return new TemplateReader(
+                (new \Symfony\Component\Finder\Finder)->files()->in($c['template_dir']),
+                $c[\hkod\frontmatter\Parser::class]
+            );
+        };
+
+        $container[\hkod\frontmatter\Parser::class] = function ($c) {
+            return (new \hkod\frontmatter\ParserBuilder)
+                ->addFrontmatterPass(new \hkod\frontmatter\MustacheParser)
+                ->addFrontmatterPass(new \hkod\frontmatter\YamlParser)
+                ->addBodyPass(new \hkod\frontmatter\MustacheParser)
                 ->buildParser();
         };
 
-        $container[QueueInterface::CLASS] = function ($c) {
-            return new FilesystemQueue($c['queue_dir']);
+        $container[MessageFactoryInterface::class] = function ($c) {
+            return new GenkgoMessageFactory(new \Genkgo\Mail\FormattedMessageFactory);
         };
 
-        $container[TransportInterface::CLASS] = function ($c) {
-            return new SmtpTransport(
-                ClientFactory::fromString($c['smtp_string'])->newClient(),
-                EnvelopeFactory::useExtractedHeader()
+        $container[MessageRepositoryInterface::class] = function ($c) {
+            return new GenkgoRepository($c[\Genkgo\Mail\Queue\QueueInterface::class]);
+        };
+
+        $container[\Genkgo\Mail\Queue\QueueInterface::class] = function ($c) {
+            return new \Genkgo\Mail\Queue\FilesystemQueue($c['queue_dir']);
+        };
+
+        $container[TransportInterface::class] = function ($c) {
+            return new GenkgoTransport($c[\Genkgo\Mail\TransportInterface::class]);
+        };
+
+        $container[\Genkgo\Mail\TransportInterface::class] = function ($c) {
+            return new \Genkgo\Mail\Transport\SmtpTransport(
+                \Genkgo\Mail\Protocol\Smtp\ClientFactory::fromString($c['smtp_string'])->newClient(),
+                \Genkgo\Mail\Transport\EnvelopeFactory::useExtractedHeader()
             );
         };
     }

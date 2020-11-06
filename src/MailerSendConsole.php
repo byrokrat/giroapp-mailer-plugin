@@ -20,25 +20,28 @@
 
 declare(strict_types = 1);
 
-namespace byrokrat\giroappmailerplugin;
+namespace byrokrat\giroapp\Mailer;
 
-use Genkgo\Mail\Queue\QueueInterface;
-use Genkgo\Mail\TransportInterface;
-use Genkgo\Mail\Exception\EmptyQueueException;
+use byrokrat\giroapp\Console\ConsoleInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class MailerSendConsole extends AbstractBaseConsole
+final class MailerSendConsole implements ConsoleInterface
 {
-    /** @var TransportInterface */
-    private $transport;
+    private MessageRepositoryInterface $repository;
+    private TransportInterface $transport;
+    private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger, QueueInterface $queue, TransportInterface $transport)
-    {
-        parent::__construct($logger, $queue);
+    public function __construct(
+        MessageRepositoryInterface $repository,
+        TransportInterface $transport,
+        LoggerInterface $logger
+    ) {
+        $this->repository = $repository;
         $this->transport = $transport;
+        $this->logger = $logger;
     }
 
     public function configure(Command $command): void
@@ -52,32 +55,15 @@ final class MailerSendConsole extends AbstractBaseConsole
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        try {
-            while (true) {
-                $message = $this->queue->fetch();
-                $headers = new HeaderReader($message);
-                try {
-                    $this->transport->send($message);
-                    $this->logger->notice(
-                        sprintf(
-                            "Sent message '%s' to '%s'",
-                            $headers->readHeader('subject'),
-                            $headers->readHeader('to')
-                        )
-                    );
-                } catch (\Exception $e) {
-                    $this->queue->store($message);
-                    $this->logger->error(
-                        sprintf(
-                            "Unable to send message to '%s': transport not ready?",
-                            $headers->readHeader('to')
-                        )
-                    );
-                    break;
-                }
+        foreach ($this->repository->fetchAll() as $message) {
+            try {
+                $this->transport->send($message);
+                $this->logger->info("Sent message '{$message->getSubject()}' to '{$message->getTo()}'");
+            } catch (TransportNotReadyException $exception) {
+                $this->repository->store($message);
+                $this->logger->error($exception->getMessage());
+                break;
             }
-        } catch (EmptyQueueException $e) {
-            $output->writeln("No more messages..");
         }
     }
 }

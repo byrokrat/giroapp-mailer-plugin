@@ -20,7 +20,7 @@
 
 declare(strict_types = 1);
 
-namespace byrokrat\giroappmailerplugin;
+namespace byrokrat\giroapp\Mailer;
 
 use byrokrat\giroapp\Plugin\PluginInterface;
 use byrokrat\giroapp\Plugin\EnvironmentInterface;
@@ -33,7 +33,8 @@ require 'phar://' . __FILE__ . '/vendor/autoload.php';
 return new class implements PluginInterface {
     public function loadPlugin(EnvironmentInterface $env): void
     {
-        $env->assertApiVersion(new ApiVersionConstraint('giroapp-mailer-plugin', '1.*'));
+        // TODO behöver fungera mer stabilt i giroapp...
+        //$env->assertApiVersion(new ApiVersionConstraint('giroapp-mailer-plugin', '1.*'));
 
         $container = new Container;
 
@@ -43,14 +44,17 @@ return new class implements PluginInterface {
         $container['template_dir'] = $env->readConfig('mailer_template_dir');
         $container['queue_dir'] = $env->readConfig('mailer_queue_dir');
         $container['queue_dir'] = $env->readConfig('mailer_queue_dir');
-        $container[LoggerInterface::CLASS] = $env->getLogger();
+        $container[LoggerInterface::class] = $env->getLogger();
 
-        $env->registerConsoleCommand($container[MailerClearConsole::CLASS]);
-        $env->registerConsoleCommand($container[MailerRemoveConsole::CLASS]);
-        $env->registerConsoleCommand($container[MailerSendConsole::CLASS]);
-        $env->registerConsoleCommand($container[MailerStatusConsole::CLASS]);
+        $env->registerConsoleCommand($container[MailerClearConsole::class]);
+        $env->registerConsoleCommand($container[MailerRemoveConsole::class]);
+        $env->registerConsoleCommand($container[MailerSendConsole::class]);
+        $env->registerConsoleCommand($container[MailerListConsole::class]);
 
-        $env->registerListener($container[DonorEventListener::CLASS]);
+        $env->registerListener($container[MailCreatingListener::class]);
+        $env->registerListener($container[MailQueueingListener::class]);
+
+        $env->registerStatistic($container[MailStatistic::class]);
     }
 };
 

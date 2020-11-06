@@ -6,10 +6,16 @@ Plugin for sending mails on donor state transitions.
 
 ## Installation
 
-1. Download the latest phar archive from the github
-   [releases](https://github.com/byrokrat/giroapp-mailer-plugin/releases) page.
-1. Place the phar in the `plugins` directory of you giroapp user directory.
-1. Copy the following snippet to `giroapp.ini` and edit to your needs.
+Download the latest phar archive from the github release page and place in the
+`plugins` directory of you giroapp user directory.
+
+or
+
+```shell
+make install
+```
+
+Then copy the following snippet to `giroapp.ini` and edit to your needs.
 
 ```ini
 ; Mailer smtp authentication string
@@ -38,8 +44,7 @@ Supported frontmatter variables are (case insensitive):
 
 * `Subject`
 * `From`
-* `ReplyTo`
-* `To` (single address or array, note that mail is always sent to donor mail address)
+* `Reply-To` or `ReplyTo`
 * `Cc` (single address or array)
 * `Bcc` (single address or array)
 
@@ -48,7 +53,7 @@ A simple template may look like:
 ```
 ---
 from: some@mail.com
-ReplyTo: some@other.mail.com
+Reply-To: some@other.mail.com
 bcc: keep-a-copy@here.com
 subject: Welcome as a donor
 ---

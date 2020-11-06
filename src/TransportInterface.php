@@ -18,25 +18,12 @@
  * Copyright 2018-20 Hannes Forsgård
  */
 
-declare(strict_types = 1);
+namespace byrokrat\giroapp\Mailer;
 
-namespace byrokrat\giroappmailerplugin;
-
-use byrokrat\giroapp\Console\ConsoleInterface;
-use Genkgo\Mail\Queue\QueueInterface;
-use Psr\Log\LoggerInterface;
-
-abstract class AbstractBaseConsole implements ConsoleInterface
+interface TransportInterface
 {
-    /** @var LoggerInterface */
-    protected $logger;
-
-    /** @var QueueInterface */
-    protected $queue;
-
-    public function __construct(LoggerInterface $logger, QueueInterface $queue)
-    {
-        $this->logger = $logger;
-        $this->queue = $queue;
-    }
+    /**
+     * @throws TransportNotReadyException
+     */
+    public function send(MessageInterface $message): void;
 }

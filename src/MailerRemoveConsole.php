@@ -20,16 +20,26 @@
 
 declare(strict_types = 1);
 
-namespace byrokrat\giroappmailerplugin;
+namespace byrokrat\giroapp\Mailer;
 
-use Genkgo\Mail\Exception\EmptyQueueException;
+use byrokrat\giroapp\Console\ConsoleInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class MailerRemoveConsole extends AbstractBaseConsole
+final class MailerRemoveConsole implements ConsoleInterface
 {
+    private MessageRepositoryInterface $repository;
+    private LoggerInterface $logger;
+
+    public function __construct(MessageRepositoryInterface $repository, LoggerInterface $logger)
+    {
+        $this->repository = $repository;
+        $this->logger = $logger;
+    }
+
     public function configure(Command $command): void
     {
         $command
@@ -42,36 +52,11 @@ final class MailerRemoveConsole extends AbstractBaseConsole
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $toRemoveAddress = $input->getArgument('recipient');
+        /** @var string */
+        $recipient = $input->getArgument('recipient');
 
-        $messagesToKeep = [];
-
-        try {
-            while (true) {
-                $message = $this->queue->fetch();
-                $headers = new HeaderReader($message);
-
-                $targetAddress = $headers->readHeader('to');
-
-                if ($toRemoveAddress != $targetAddress) {
-                    $messagesToKeep[] = $message;
-                    continue;
-                }
-
-                $this->logger->notice(
-                    sprintf(
-                        "Removed message '%s' to '%s'",
-                        $headers->readHeader('subject'),
-                        $targetAddress
-                    )
-                );
-            }
-        } catch (EmptyQueueException $e) {
-            $output->writeln("No more messages..");
-        }
-
-        foreach ($messagesToKeep as $message) {
-            $this->queue->store($message);
+        foreach ($this->repository->fetchForRecipient($recipient) as $message) {
+            $this->logger->info("Removed message '{$message->getSubject()}' to '{$message->getTo()}'");
         }
     }
 }

@@ -20,47 +20,41 @@
 
 declare(strict_types = 1);
 
-namespace byrokrat\giroappmailerplugin;
+namespace byrokrat\giroapp\Mailer;
 
-use Genkgo\Mail\Exception\EmptyQueueException;
+use byrokrat\giroapp\Console\ConsoleInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class MailerStatusConsole extends AbstractBaseConsole
+final class MailerListConsole implements ConsoleInterface
 {
+    private MessageRepositoryInterface $repository;
+
+    public function __construct(MessageRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
     public function configure(Command $command): void
     {
         $command
-            ->setName('mailer:status')
+            ->setName('mailer:list')
             ->setDescription('Inspect the mail queue')
-            ->setHelp('Display the list of messages queued [giroapp-mailer-plugin @plugin_version@]')
+            ->setHelp('Display the list of queued messages [giroapp-mailer-plugin @plugin_version@]')
         ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $messages = [];
-
-        try {
-            while (true) {
-                $message = $this->queue->fetch();
-                $headers = new HeaderReader($message);
-                $output->writeln(
-                    sprintf(
-                        "Message '%s' to '%s'",
-                        $headers->readHeader('subject'),
-                        $headers->readHeader('to')
-                    )
-                );
-                $messages[] = $message;
-            }
-        } catch (EmptyQueueException $e) {
-            $output->writeln("No more messages..");
-        }
-
-        foreach ($messages as $message) {
-            $this->queue->store($message);
+        foreach ($this->repository->inspectAll() as $message) {
+            $output->writeln(
+                sprintf(
+                    "Message '%s' to '%s'",
+                    $message->getSubject(),
+                    $message->getTo()
+                )
+            );
         }
     }
 }

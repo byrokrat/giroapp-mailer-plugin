@@ -50,7 +50,7 @@ phpstan: vendor/installed
 ifndef PHPSTAN
     $(error "phpstan is not available, please install to continue")
 endif
-	phpstan analyze -l 7 src stub.php
+	phpstan analyze -l 8 src stub.php
 
 phpcs: vendor/installed
 ifndef PHPCS
