@@ -28,15 +28,15 @@ use Psr\Log\LoggerInterface;
 
 final class MailCreatingListener implements ListenerInterface
 {
-    private TemplateReader $templateReader;
     private MessageFactoryInterface $messageFactory;
     private MessageBuffer $messageBuffer;
+    private TemplateReader $templateReader;
     private LoggerInterface $logger;
 
     public function __construct(
-        TemplateReader $templateReader,
         MessageFactoryInterface $messageFactory,
         MessageBuffer $messageBuffer,
+        TemplateReader $templateReader,
         LoggerInterface $logger
     ) {
         $this->templateReader = $templateReader;
