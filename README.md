@@ -1,15 +1,8 @@
 # giroapp-mailer-plugin
 
-[![Build Status](https://img.shields.io/travis/byrokrat/giroapp-mailer-plugin/master.svg?style=flat-square)](https://travis-ci.org/byrokrat/giroapp-mailer-plugin)
-
 Plugin for sending mails on donor state transitions.
 
 ## Installation
-
-Download the latest phar archive from the github release page and place in the
-`plugins` directory of you giroapp user directory.
-
-or
 
 ```shell
 make install
