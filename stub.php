@@ -33,17 +33,18 @@ require 'phar://' . __FILE__ . '/vendor/autoload.php';
 return new class implements PluginInterface {
     public function loadPlugin(EnvironmentInterface $env): void
     {
-        // TODO behöver fungera mer stabilt i giroapp...
-        //$env->assertApiVersion(new ApiVersionConstraint('giroapp-mailer-plugin', '1.*'));
+        $env->assertApiVersion(new ApiVersionConstraint('giroapp-mailer-plugin', '1.*'));
 
         $container = new Container;
 
         $container->register(new DependenciesProvider);
 
         $container['smtp_string'] = $env->readConfig('mailer_smtp_string');
+        $container['default_from_header'] = $env->readConfig('mailer_default_from_header');
+        $container['default_reply_to_header'] = $env->readConfig('mailer_default_reply_to_header');
         $container['template_dir'] = $env->readConfig('mailer_template_dir');
         $container['queue_dir'] = $env->readConfig('mailer_queue_dir');
-        $container['queue_dir'] = $env->readConfig('mailer_queue_dir');
+
         $container[LoggerInterface::class] = $env->getLogger();
 
         $env->registerConsoleCommand($container[MailerClearConsole::class]);

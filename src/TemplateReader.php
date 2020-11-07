@@ -25,20 +25,27 @@ namespace byrokrat\giroapp\Mailer;
 use byrokrat\giroapp\Event\DonorEvent;
 use byrokrat\giroapp\Event\DonorEmailUpdated;
 use byrokrat\giroapp\Event\DonorStateUpdated;
+use byrokrat\giroapp\Filesystem\FilesystemInterface;
 use byrokrat\giroapp\Utils\ClassIdExtractor;
 use hkod\frontmatter\Parser as FrontmatterParser;
-use Symfony\Component\Finder\Finder;
 
 final class TemplateReader
 {
-    private Finder $finder;
+    private FilesystemInterface $filesystem;
     private FrontmatterParser $frontmatterParser;
+    private string $defaultFrom;
+    private string $defaultReplyTo;
 
-    // TODO använd filesystem istället...
-    public function __construct(Finder $finder, FrontmatterParser $frontmatterParser)
-    {
+    public function __construct(
+        FilesystemInterface $filesystem,
+        FrontmatterParser $frontmatterParser,
+        string $defaultFrom,
+        string $defaultReplyTo
+    ) {
+        $this->filesystem = $filesystem;
         $this->frontmatterParser = $frontmatterParser;
-        $this->finder = $finder;
+        $this->defaultFrom = $defaultFrom;
+        $this->defaultReplyTo = $defaultReplyTo;
     }
 
     /**
@@ -72,8 +79,8 @@ final class TemplateReader
             yield new Template(
                 $body,
                 $metadata['subject'] ?? '',
-                $metadata['from'] ?? '',
-                $metadata['reply-to'] ?? $metadata['replyto'] ?? '',
+                $metadata['from'] ?? $this->defaultFrom,
+                $metadata['reply-to'] ?? $metadata['replyto'] ?? $this->defaultReplyTo,
                 $toAddress,
                 (array)($metadata['cc'] ?? []),
                 (array)($metadata['bcc'] ?? [])
@@ -86,9 +93,9 @@ final class TemplateReader
      */
     private function getRawTemplatesForExtension(string $extension): \Generator
     {
-        foreach ($this->finder as $file) {
+        foreach ($this->filesystem->readDir('') as $file) {
             if (preg_match("/\.$extension$/", $file->getFilename())) {
-                yield $file->getContents();
+                yield $file->getContent();
             }
         }
     }

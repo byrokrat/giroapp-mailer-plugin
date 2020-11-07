@@ -21,6 +21,12 @@ Then copy the following snippet to `giroapp.ini` and edit to your needs.
 ; Mailer smtp authentication string
 mailer_smtp_string = "smtp://user:pass@host/"
 
+; Default from header address
+mailer_default_from_header = ""
+
+; Default reply-to header address
+mailer_default_reply_to_header = ""
+
 ; Directory where mail templates are stored
 mailer_template_dir = "%base_dir%/mailer_templates"
 
@@ -43,8 +49,8 @@ Templates are html formatted mustache templates with a YAML frontmatter.
 Supported frontmatter variables are (case insensitive):
 
 * `Subject`
-* `From`
-* `Reply-To` or `ReplyTo`
+* `From` (overrides mailer_default_from_header if set)
+* `Reply-To` or `ReplyTo` (overrides mailer_default_reply_to_header if set)
 * `Cc` (single address or array)
 * `Bcc` (single address or array)
 

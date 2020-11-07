@@ -30,8 +30,7 @@
         "genkgo/mail": "^2.2",
         "hkod/frontmatter": "^1",
         "mustache/mustache": "^2.5",
-        "symfony/yaml": "^5",
-        "symfony/finder": "^5"
+        "symfony/yaml": "^5"
     },
     "require-dev": {
         "byrokrat/giroapp": "^1@beta"

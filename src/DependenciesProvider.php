@@ -73,8 +73,17 @@ final class DependenciesProvider implements \Pimple\ServiceProviderInterface
 
         $container[TemplateReader::class] = function ($c) {
             return new TemplateReader(
-                (new \Symfony\Component\Finder\Finder)->files()->in($c['template_dir']),
-                $c[\hkod\frontmatter\Parser::class]
+                $c[\byrokrat\giroapp\Filesystem\FilesystemInterface::class],
+                $c[\hkod\frontmatter\Parser::class],
+                $c['default_from_header'],
+                $c['default_reply_to_header']
+            );
+        };
+
+        $container[\byrokrat\giroapp\Filesystem\FilesystemInterface::class] = function ($c) {
+            return new \byrokrat\giroapp\Filesystem\StdFilesystem(
+                $c['template_dir'],
+                new \Symfony\Component\Filesystem\Filesystem
             );
         };
 
