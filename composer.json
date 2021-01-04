@@ -33,6 +33,7 @@
         "symfony/yaml": "^5"
     },
     "require-dev": {
-        "byrokrat/giroapp": "^1@beta"
+        "byrokrat/giroapp": "^1@beta",
+        "roave/security-advisories": "dev-latest"
     }
 }
