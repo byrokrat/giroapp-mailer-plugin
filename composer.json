@@ -24,7 +24,7 @@
         }
     },
     "require": {
-        "php": ">=7.4",
+        "php": "^7.4 || ^8.0",
         "ext-intl": "*",
         "pimple/pimple": "^3.0",
         "genkgo/mail": "^2.2",
