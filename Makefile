@@ -26,6 +26,7 @@ build: $(TARGET)
 clean:
 	rm -f $(TARGET)
 	rm -rf vendor
+	rm -rf tools
 
 .PHONY: install uninstall
 
