@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of giroapp-mailer-plugin.
  *
@@ -18,7 +19,7 @@
  * Copyright 2018-21 Hannes Forsgård
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace byrokrat\giroapp\Mailer;
 
@@ -68,7 +69,7 @@ final class DependenciesProvider implements \Pimple\ServiceProviderInterface
         };
 
         $container[MessageBuffer::class] = function ($c) {
-            return new MessageBuffer;
+            return new MessageBuffer();
         };
 
         $container[TemplateReader::class] = function ($c) {
@@ -83,20 +84,20 @@ final class DependenciesProvider implements \Pimple\ServiceProviderInterface
         $container[\byrokrat\giroapp\Filesystem\FilesystemInterface::class] = function ($c) {
             return new \byrokrat\giroapp\Filesystem\StdFilesystem(
                 $c['template_dir'],
-                new \Symfony\Component\Filesystem\Filesystem
+                new \Symfony\Component\Filesystem\Filesystem()
             );
         };
 
         $container[\hkod\frontmatter\Parser::class] = function ($c) {
-            return (new \hkod\frontmatter\ParserBuilder)
-                ->addFrontmatterPass(new \hkod\frontmatter\MustacheParser)
-                ->addFrontmatterPass(new \hkod\frontmatter\YamlParser)
-                ->addBodyPass(new \hkod\frontmatter\MustacheParser)
+            return (new \hkod\frontmatter\ParserBuilder())
+                ->addFrontmatterPass(new \hkod\frontmatter\MustacheParser())
+                ->addFrontmatterPass(new \hkod\frontmatter\YamlParser())
+                ->addBodyPass(new \hkod\frontmatter\MustacheParser())
                 ->buildParser();
         };
 
         $container[MessageFactoryInterface::class] = function ($c) {
-            return new GenkgoMessageFactory(new \Genkgo\Mail\FormattedMessageFactory);
+            return new GenkgoMessageFactory(new \Genkgo\Mail\FormattedMessageFactory());
         };
 
         $container[MessageRepositoryInterface::class] = function ($c) {

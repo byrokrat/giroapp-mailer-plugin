@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of giroapp-mailer-plugin.
  *
@@ -18,7 +19,7 @@
  * Copyright 2018-21 Hannes Forsgård
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace byrokrat\giroapp\Mailer;
 

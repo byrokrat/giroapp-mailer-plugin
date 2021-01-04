@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of giroapp-mailer-plugin.
  *
@@ -18,7 +19,7 @@
  * Copyright 2018-21 Hannes Forsgård
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace byrokrat\giroapp\Mailer;
 
@@ -35,9 +36,9 @@ return new class implements PluginInterface {
     {
         $env->assertApiVersion(new ApiVersionConstraint('giroapp-mailer-plugin', '1.*'));
 
-        $container = new Container;
+        $container = new Container();
 
-        $container->register(new DependenciesProvider);
+        $container->register(new DependenciesProvider());
 
         $container['smtp_string'] = $env->readConfig('mailer_smtp_string');
         $container['default_from_header'] = $env->readConfig('mailer_default_from_header');

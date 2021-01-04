@@ -47,7 +47,7 @@ phpstan: vendor/installed $(PHPSTAN_CMD)
 	$(PHPSTAN_CMD) analyze -l 8 src stub.php
 
 phpcs: vendor/installed $(PHPCS_CMD)
-	$(PHPCS_CMD) src --standard=PSR2
+	$(PHPCS_CMD)
 
 composer.lock: composer.json
 	@echo composer.lock is not up to date
