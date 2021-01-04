@@ -2,3 +2,4 @@
 /composer.phar
 /giroapp-mailer-plugin.phar
 /*.local*
+/tools
